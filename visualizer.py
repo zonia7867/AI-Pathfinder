@@ -2,7 +2,7 @@ import pygame
 from bfs_pathfinder import Grid, BFS
 
 
-class BFSVisualizer:
+class PathVisualizer:
     COLORS = {
         'background': (220, 220, 220),
         'wall': (0, 0, 0),                
@@ -15,10 +15,11 @@ class BFSVisualizer:
         'current': (255, 215, 0),         
     }
 
-    def __init__(self, grid, cell_size=30, step_delay=50):
+    def __init__(self, grid, algo="BFS",cell_size=30, step_delay=50):
         pygame.init()
 
         self.grid = grid
+        self.algo = algo
         self.cell_size = cell_size
         self.step_delay = step_delay
         self.width = grid.width * cell_size
@@ -28,7 +29,7 @@ class BFSVisualizer:
         self.screen = pygame.display.set_mode(
             (self.width, self.height + self.info_height)
         )
-        pygame.display.set_caption("AI Pathfinder")
+        pygame.display.set_caption(f"AI PATHFINDING VISUALIZER - {self.algo}")
 
         self.font = pygame.font.Font(None, 24)
         self.title_font = pygame.font.Font(None, 36)
@@ -44,17 +45,13 @@ class BFSVisualizer:
     def visualize(self, start, goal):
         self.start_pos = start
         self.goal_pos = goal
-        self._print_header()
-        self._print_grid_info()
-
-        print("\nStarting Search...\n")
         self.pathfinder = BFS(self.grid)
         result = self.pathfinder.search(start, goal)
 
         self.steps = self.pathfinder.get_steps()
         self.path = self.pathfinder.get_path()
 
-        self._print_search_results(result)
+        self.print_search_results(result)
 
         clock = pygame.time.Clock()
         running = True
@@ -65,7 +62,7 @@ class BFSVisualizer:
                 if event.type == pygame.QUIT:
                     running = False
 
-            self._draw_state(animation_step)
+            self.draw_state(animation_step)
             pygame.display.flip()
             clock.tick(1000 // self.step_delay)
 
@@ -73,9 +70,9 @@ class BFSVisualizer:
 
 
         if result:
-            self._draw_final_state()
+            self.draw_final_state()
             pygame.display.flip()
-            self._print_path_details()
+            self.print_path_details()
 
         while running:
             for event in pygame.event.get():
@@ -86,7 +83,7 @@ class BFSVisualizer:
         pygame.quit()
 
 
-    def _draw_state(self, step_index):
+    def draw_state(self, step_index):
         self.screen.fill(self.COLORS['background'])
 
         step = self.steps[step_index] if step_index < len(self.steps) else {}
@@ -121,12 +118,10 @@ class BFSVisualizer:
                 pygame.draw.rect(self.screen, color, rect)
                 pygame.draw.rect(self.screen, (150, 150, 150), rect, 1)  
 
-        self._draw_info_panel(step_index, explored, frontier)
+        self.draw_info_panel(step_index, explored, frontier)
 
-    def _draw_final_state(self):
+    def draw_final_state(self):
         self.screen.fill(self.COLORS['background'])
-
-
         for x in range(self.grid.width):
             for y in range(self.grid.height):
                 rect = pygame.Rect(
@@ -152,16 +147,15 @@ class BFSVisualizer:
                 pygame.draw.rect(self.screen, color, rect)
                 pygame.draw.rect(self.screen, (150, 150, 150), rect, 1)
 
-        self._draw_final_info_panel()
+        self.draw_final_info_panel()
 
-    def _draw_info_panel(self, step_index, explored, frontier):
-        """Draw information panel at bottom"""
+    def draw_info_panel(self, step_index, explored, frontier):
         info_rect = pygame.Rect(0, self.height, self.width, self.info_height)
-        pygame.draw.rect(self.screen, (50, 50, 50), info_rect)
+        pygame.draw.rect(self.screen, (0,0,255), info_rect)
         pygame.draw.line(self.screen, (255, 255, 0), (0, self.height), (self.width, self.height), 3)
 
     
-        title_text = self.title_font.render("🤖 BFS Algorithm", True, (255, 255, 255))
+        title_text = self.title_font.render(f" {self.algo} Algorithm", True, (255, 255, 255))
         self.screen.blit(title_text, (10, self.height + 8))
 
         
@@ -177,16 +171,14 @@ class BFSVisualizer:
         )
         self.screen.blit(stats_text, (10, self.height + 65))
 
-    def _draw_final_info_panel(self):
+    def draw_final_info_panel(self):
         info_rect = pygame.Rect(0, self.height, self.width, self.info_height)
-        pygame.draw.rect(self.screen, (34, 139, 34), info_rect)  # Green background
+        pygame.draw.rect(self.screen, (34, 139, 34), info_rect) 
         pygame.draw.line(self.screen, (255, 215, 0), (0, self.height), (self.width, self.height), 3)
 
-        # Title
-        title_text = self.title_font.render("✅ Path Found!", True, (255, 255, 255))
+        title_text = self.title_font.render("Path Found!", True, (255, 255, 255))
         self.screen.blit(title_text, (10, self.height + 8))
 
-        # Stats
         path_length = len(self.path)
         stats1 = self.font.render(
             f"Path Length: {path_length} steps",
@@ -200,31 +192,12 @@ class BFSVisualizer:
         )
         self.screen.blit(stats2, (10, self.height + 65))
 
-    def _print_header(self):
-        """Print beautiful header in console"""
-        print("\n" + "=" * 70)
-        print("║" + " " * 68 + "║")
-        print("║" + " " * 15 + " AI PATHFINDER " + " " * 15 + "║")
-        print("║" + " " * 68 + "║")
-        print("=" * 70)
-
-    def _print_grid_info(self):
-        """Print grid information"""
-        print("\n==> GRID INFORMATION:")
-        print("─" * 70)
-        print(f"   Grid Size      : {self.grid.width} × {self.grid.height}")
-        print(f"   Total Cells    : {self.grid.width * self.grid.height}")
-        print(f"   Wall Count     : {len(self.grid.walls)}")
-        print(f"   Start Position : {self.start_pos}")
-        print(f"   Goal Position  : {self.goal_pos}")
-        print("─" * 70)
-
-    def _print_search_results(self, result):
+    def print_search_results(self, result):
         """Print search results"""
         print("\n SEARCH RESULTS:")
         print("─" * 70)
         if result:
-            print("   Status         :  PATH FOUND")
+            print("   Status         : PATH FOUND")
             print(f"   Path Length    : {len(self.path)} steps")
             print(f"   Nodes Explored : {len(self.pathfinder.explored)}")
             print(f"   Search Steps   : {len(self.steps)}")
@@ -233,8 +206,7 @@ class BFSVisualizer:
             print(f"   Nodes Explored : {len(self.pathfinder.explored)}")
         print("─" * 70)
 
-    def _print_path_details(self):
-        """Print path details"""
+    def print_path_details(self):
         if self.path:
             print("\n  PATH DETAILS:")
             print("─" * 70)
@@ -249,3 +221,4 @@ class BFSVisualizer:
                 print()
             print("─" * 70)
 
+ 

@@ -1,21 +1,6 @@
 from bfs_pathfinder import Grid, BFS
-from visualizer import BFSVisualizer
-
-
-def create_example_grid():
-    width, height = 10, 10
-    walls = set()
-    for y in range(1, 7):
-        walls.add((5, y))
-
-    walls.add((3, 3))
-    walls.add((3, 4))
-    walls.add((7, 2))
-    walls.add((7, 8))
-
-    return Grid(width, height, walls)
-
-
+from dfs_path import DFS
+from visualizer import PathVisualizer
 def make_grid():
     width, height = 15, 15
     walls = set()
@@ -27,7 +12,7 @@ def make_grid():
         walls.add((x, 8))
     
     for y in range(3, 8):
-        walls.add((10, y))
+        walls.add((10, y)) 
     
 
     walls.add((3, 5))
@@ -54,15 +39,21 @@ def main():
     choice = input("\n Enter your choice: ").strip()
 
     if choice == "1":
+        algo="BFS"
         grid = make_grid()
         start = (1, 1)
         goal = (13, 13)
-        visualizer = BFSVisualizer(grid, cell_size=40, step_delay=100)
+        pathfinder = BFS(grid)
+        visualizer = PathVisualizer(grid, cell_size=40, step_delay=100)
         visualizer.visualize(start, goal)
     elif choice == "2":
+        algo="DFS"
         grid = make_grid()
         start = (1, 1)
         goal = (13, 13)
+        pathfinder = DFS(grid)
+        visualizer = PathVisualizer(grid, algo="DFS", cell_size=40, step_delay=100)
+        visualizer.visualize(start, goal)
     elif choice == "3":
         grid = make_grid()
         start = (1, 1)
@@ -83,6 +74,7 @@ def main():
         print("Invalid choice. Select a valid option.")
         return
     
+
 
 if __name__ == "__main__":
     main()
