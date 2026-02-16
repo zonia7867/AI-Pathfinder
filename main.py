@@ -1,5 +1,9 @@
 from bfs_pathfinder import Grid, BFS
 from dfs_path import DFS
+from ucs_path import UCS
+from dls_path import DLS
+from iddfs_path import IDDFS
+from bidirectional_path import BidirectionalSearch
 from visualizer import PathVisualizer
 def make_grid():
     width, height = 15, 15
@@ -37,44 +41,31 @@ def print_menu():
 def main():
     print_menu()
     choice = input("\n Enter your choice: ").strip()
+    grid = make_grid()
+    start = (1, 1)
+    goal = (13, 13)
 
     if choice == "1":
-        algo="BFS"
-        grid = make_grid()
-        start = (1, 1)
-        goal = (13, 13)
-        pathfinder = BFS(grid)
-        visualizer = PathVisualizer(grid, cell_size=40, step_delay=100)
+        visualizer = PathVisualizer(grid, algo="BFS", cell_size=40, step_delay=100)
         visualizer.visualize(start, goal)
     elif choice == "2":
-        algo="DFS"
-        grid = make_grid()
-        start = (1, 1)
-        goal = (13, 13)
-        pathfinder = DFS(grid)
         visualizer = PathVisualizer(grid, algo="DFS", cell_size=40, step_delay=100)
         visualizer.visualize(start, goal)
     elif choice == "3":
-        grid = make_grid()
-        start = (1, 1)
-        goal = (13, 13)
+        visualizer = PathVisualizer(grid, algo="UCS", cell_size=40, step_delay=100)
+        visualizer.visualize(start, goal)
     elif choice == "4":
-        grid = make_grid()
-        start = (1, 1)
-        goal = (13, 13)
+        visualizer = PathVisualizer(grid, algo="DLS", cell_size=40, step_delay=100)
+        visualizer.visualize(start, goal)
     elif choice == "5":
-        grid = make_grid()
-        start = (1, 1)
-        goal = (13, 13)
+        visualizer = PathVisualizer(grid, algo="IDS", cell_size=40, step_delay=100)
+        visualizer.visualize(start, goal)
     elif choice == "6":
-        grid = make_grid()
-        start = (1, 1)
-        goal = (13, 13)
+        visualizer = PathVisualizer(grid, algo="BDS", cell_size=40, step_delay=100)
+        visualizer.visualize(start, goal)
     else:
         print("Invalid choice. Select a valid option.")
         return
-    
-
 
 if __name__ == "__main__":
     main()
