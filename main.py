@@ -3,7 +3,7 @@ from dfs_path import DFS
 from ucs_path import UCS
 from dls_path import DLS
 from iddfs_path import IDDFS
-from bidirectional_path import BidirectionalSearch
+from bidirectional_path import Grid as BiGrid, BidirectionalSearch
 from visualizer import PathVisualizer
 def make_grid():
     width, height = 15, 15
