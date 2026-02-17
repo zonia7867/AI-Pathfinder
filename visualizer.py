@@ -1,5 +1,10 @@
 import pygame
 from bfs_pathfinder import Grid, BFS
+from dfs_path import DFS
+from ucs_path import UCS
+from dls_path import DLS
+from iddfs_path import IDDFS
+from bidirectional_path import BidirectionalSearch
 
 
 class PathVisualizer:
@@ -45,9 +50,28 @@ class PathVisualizer:
     def visualize(self, start, goal):
         self.start_pos = start
         self.goal_pos = goal
-        self.pathfinder = BFS(self.grid)
+
+        # choose algorithm implementation
+        if self.algo == "BFS":
+            self.pathfinder = BFS(self.grid)
+        elif self.algo == "DFS":
+            self.pathfinder = DFS(self.grid)
+        elif self.algo == "UCS":
+            self.pathfinder = UCS(self.grid)
+        elif self.algo == "DLS":
+            self.pathfinder = DLS(self.grid)
+        elif self.algo == "IDS":
+            self.pathfinder = IDDFS(self.grid)
+        elif self.algo == "BDS" or self.algo == "BIDIRECTIONAL":
+            self.pathfinder = BidirectionalSearch(self.grid)
+        else:
+            # default to BFS if unknown
+            print(f"Unknown algorithm '{self.algo}', falling back to BFS")
+            self.pathfinder = BFS(self.grid)
+
         result = self.pathfinder.search(start, goal)
 
+        # retrieve data for visualization regardless of the search type
         self.steps = self.pathfinder.get_steps()
         self.path = self.pathfinder.get_path()
 
