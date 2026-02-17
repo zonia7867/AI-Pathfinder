@@ -20,7 +20,7 @@ class Grid:
 
 
 class DLS:
-    def __init__(self, grid, limit=16):
+    def __init__(self, grid, limit=10):
         self.grid = grid
         self.limit = limit
         self.explored = set()

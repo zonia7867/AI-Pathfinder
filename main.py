@@ -3,7 +3,7 @@ from dfs_path import DFS
 from ucs_path import UCS
 from dls_path import DLS
 from iddfs_path import IDDFS
-from bidirectional_path import Grid as BiGrid, BidirectionalSearch
+from bidirectional_path import BidirectionalSearch
 from visualizer import PathVisualizer
 def make_grid():
     width, height = 15, 15
@@ -43,7 +43,7 @@ def main():
     choice = input("\n Enter your choice: ").strip()
     grid = make_grid()
     start = (1, 1)
-    goal = (6, 6)
+    goal = (13, 13)
 
     if choice == "1":
         visualizer = PathVisualizer(grid, algo="BFS", cell_size=40, step_delay=100)
@@ -66,5 +66,6 @@ def main():
     else:
         print("Invalid choice. Select a valid option.")
         return
+
 if __name__ == "__main__":
     main()
